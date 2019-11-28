@@ -28,25 +28,22 @@ pipeline {
                 sh 'npm test'
             }
         }
-        stage('Building image') {
-            steps{
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-            }
-        }
-        stage('Deploy Image') {
+        stage('Build and Deploy Image') {
             steps {
                 script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                    }
+					def imageName = "${registry}"
+					docker.withRegistry("https://${registry}", registryCredential) {
+						def customImage = docker.build(imageName)
+						customImage.push("${BUILD_NUMBER}")
+						customImage.push("latest")
+					}
                 }
             }
         }
-        stage('Remove Unused docker image') {
+        stage('Remove docker images') {
             steps{
                 sh "docker rmi $registry:$BUILD_NUMBER"
+                sh "docker rmi $registry:latest"
             }
         }
 
