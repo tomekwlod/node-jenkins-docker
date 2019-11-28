@@ -31,15 +31,29 @@ pipeline {
         stage('Build and Deploy Image') {
             steps {
                 script {
-					def imageName = "${registry}"
-					docker.withRegistry("https://${registry}", registryCredential) {
-						def customImage = docker.build(imageName)
-						customImage.push("${BUILD_NUMBER}")
-						customImage.push("latest")
+					docker.withRegistry('', registryCredential) {
+
+						def customImage = docker.build("${registry}:${BUILD_NUMBER}")
+
+						/* Push the container to the custom Registry */
+						customImage.push()
+						customImage.push('latest')
 					}
                 }
             }
         }
+        // stage('Build and Deploy Image') {
+        //     steps {
+        //         script {
+		// 			def imageName = "${registry}"
+		// 			docker.withRegistry("https://"+ registry, registryCredential) {
+		// 				def customImage = docker.build(imageName)
+		// 				customImage.push("${BUILD_NUMBER}")
+		// 				customImage.push("latest")
+		// 			}
+        //         }
+        //     }
+        // }
         stage('Remove docker images') {
             steps{
                 sh "docker rmi $registry:$BUILD_NUMBER"
