@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        registry = "twlphaseii/simple-node-app"
+        registry = "twlphaseii/node-jenkins-docker"
         registryCredential = 'dockerhub'
     }
 
