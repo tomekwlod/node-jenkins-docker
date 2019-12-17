@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "twlphaseii/node-jenkins-docker"
-        registryCredential = 'dockerhub'
+        registryCredential = 'owndockerhub'
     }
 
     agent any
@@ -31,7 +31,9 @@ pipeline {
         stage('Build and Deploy Image') {
             steps {
                 script {
-					docker.withRegistry('', registryCredential) {
+					// here put the custom docker registry intead of ''
+					// https://jenkins.io/doc/book/pipeline/docker/#custom-registry
+					docker.withRegistry('https://docker.phaseiilabs.com', registryCredential) {
 
 						def customImage = docker.build("${registry}:${BUILD_NUMBER}")
 
@@ -42,18 +44,6 @@ pipeline {
                 }
             }
         }
-        // stage('Build and Deploy Image') {
-        //     steps {
-        //         script {
-		// 			def imageName = "${registry}"
-		// 			docker.withRegistry("https://"+ registry, registryCredential) {
-		// 				def customImage = docker.build(imageName)
-		// 				customImage.push("${BUILD_NUMBER}")
-		// 				customImage.push("latest")
-		// 			}
-        //         }
-        //     }
-        // }
         stage('Remove docker images') {
             steps{
                 sh "docker rmi $registry:$BUILD_NUMBER"
