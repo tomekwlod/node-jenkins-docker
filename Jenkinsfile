@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "twlphaseii/node-jenkins-docker"
-        registryCredential = 'owndockerhub'
+        registryCredential = 'phii-docker-hub'
     }
 
     agent any
