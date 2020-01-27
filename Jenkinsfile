@@ -33,7 +33,7 @@ pipeline {
                 script {
 					// here put the custom docker registry intead of ''
 					// https://jenkins.io/doc/book/pipeline/docker/#custom-registry
-					docker.withRegistry('https://docker.phaseiilabs.com', registryCredential) {
+					docker.withRegistry('https://docker-registry.phaseiilabs.com', registryCredential) {
 
 						def customImage = docker.build("${registry}:${BUILD_NUMBER}")
 
